@@ -1,11 +1,11 @@
 export const config = {
-  title: "Moire",
-  author: "Aeris",
+  title: ".dot.",
+  author: "harun",
   theme: "classic",
-  heatmap: true,
+  heatmap: false,
   pageSize: 20,
   order_by: "created",
-  description: "Sync your thoughts from Apple Notes by Shortcuts.",
+  description: "jot down",
   keywords: "memo, thought, sync, apple notes, shortcuts, ios",
   url: "https://moire.blog"
 };
