@@ -1,8 +1,53 @@
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 const memosDir = path.resolve('src/memos');
 const deleteMarker = /(^|\s)\[del\](?=\s|$)/im;
+const syncDeleteMarker = /\[del\]\s*([^\n\r]+)/gi;
+
+function normalizeTitle(value) {
+  return value
+    .replace(/\s+\/\s+\d{4}-\d{2}-\d{2}$/, '')
+    .replace(/[*_`~[\]#>:-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function getDeletedTitlesFromHeadCommit() {
+  let message = '';
+
+  try {
+    message = execSync('git log -1 --pretty=%B', { encoding: 'utf8' });
+  } catch {
+    return new Set();
+  }
+
+  if (!message.startsWith('Sync from Mac mini:')) {
+    return new Set();
+  }
+
+  const titles = new Set();
+  let match;
+
+  while ((match = syncDeleteMarker.exec(message)) !== null) {
+    const normalized = normalizeTitle(match[1]);
+    if (normalized) titles.add(normalized);
+  }
+
+  return titles;
+}
+
+function getMemoTitle(content) {
+  const body = content.replace(/^---\s*[\r\n]+[\s\S]*?[\r\n]+---/, '').trim();
+  const firstNonEmptyLine = body
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find(Boolean);
+
+  return firstNonEmptyLine ? normalizeTitle(firstNonEmptyLine) : '';
+}
 
 function walkMarkdownFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -47,11 +92,13 @@ function main() {
 
   const markdownFiles = walkMarkdownFiles(memosDir);
   const deletedFiles = [];
+  const deletedTitles = getDeletedTitlesFromHeadCommit();
 
   for (const filePath of markdownFiles) {
     const content = fs.readFileSync(filePath, 'utf8');
+    const memoTitle = getMemoTitle(content);
 
-    if (!deleteMarker.test(content)) continue;
+    if (!deleteMarker.test(content) && !deletedTitles.has(memoTitle)) continue;
 
     fs.unlinkSync(filePath);
     deletedFiles.push(path.relative(process.cwd(), filePath));
