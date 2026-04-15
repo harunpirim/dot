@@ -13,11 +13,11 @@ export interface MoireConfig {
 }
 
 export const config: MoireConfig = {
-  title: '.dot.',
+  title: 'dot',
   author: 'harun',
-  description: '...',
+  description: '.',
   url: 'https://harunpirim.github.io/dot',
-  theme: 'bento',
+  theme: 'pixel',
   heatmap: false,
   pageSize: 10,
   order_by: 'created',
