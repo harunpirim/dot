@@ -17,7 +17,7 @@ export const config: MoireConfig = {
   author: 'harun',
   description: '...',
   url: 'https://harunpirim.github.io/dot',
-  theme: 'academic',
+  theme: 'bento',
   heatmap: false,
   pageSize: 10,
   order_by: 'created',
