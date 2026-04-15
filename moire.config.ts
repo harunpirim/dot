@@ -5,7 +5,5 @@ export const config = {
   heatmap: false,
   pageSize: 10,
   order_by: "created",
-  description: "",
-  keywords: "memo, thought, sync",
-  url: ""
+  keywords: "memo, thought, sync"
 };
