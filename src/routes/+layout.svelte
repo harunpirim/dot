@@ -20,7 +20,9 @@
 	<meta name="description" content={config.description} />
 	<meta name="author" content={config.author} />
 	<meta name="keywords" content={config.keywords} />
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href={favicon} type="image/svg+xml" />
+	<link rel="shortcut icon" href={favicon} />
+	<link rel="apple-touch-icon" href={`${siteUrl}/icon.svg`} />
   <link rel="canonical" href={siteUrl} />
 
   <meta property="og:type" content="website" />

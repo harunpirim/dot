@@ -9,11 +9,13 @@ export type Memo = {
   tags: string[];
 };
 
+const DELETE_MARKER = /(^|\s)\[del\](?=\s|$)/im;
+
 export async function getMemos(): Promise<Memo[]> {
   const memoModules = import.meta.glob('/src/memos/**/*.md', { query: '?raw', import: 'default', eager: true });
   const assetModules = import.meta.glob('/src/memos/**/*.{png,jpg,jpeg,gif,webp}', { eager: true });
 
-  const memos: Memo[] = await Promise.all(
+  const memos = (await Promise.all(
     Object.entries(memoModules).map(async ([path, rawContent]) => {
       const slug = path.split('/').pop()?.replace('.md', '') || 'unknown';
 
@@ -80,6 +82,10 @@ export async function getMemos(): Promise<Memo[]> {
         }
       }
 
+      if (DELETE_MARKER.test(markdownString)) {
+        return null;
+      }
+
       let markdown = resolveAssets(markdownString, path);
 
       markdown = markdown.replace(
@@ -127,7 +133,7 @@ export async function getMemos(): Promise<Memo[]> {
         tags
       };
     })
-  );
+  )).filter((memo): memo is Memo => memo !== null);
 
   memos.sort((a, b) => b.date.getTime() - a.date.getTime());
 

@@ -10,7 +10,8 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "cleanup:images": "node scripts/cleanup-images.js"
+		"cleanup:deleted-memos": "node scripts/cleanup-deleted-memos.js",
+		"cleanup:images": "node scripts/cleanup-images.js"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.0",

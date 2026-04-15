@@ -1,0 +1,44 @@
+name: Cleanup Deleted Memos
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/memos/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Remove [del]-marked memos
+        run: npm run cleanup:deleted-memos
+
+      - name: Stage changes
+        run: git add -A src/memos
+
+      - name: Commit and push changes
+        run: |
+          if ! git diff --cached --quiet; then
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m "chore: remove [del]-marked memos"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No deleted memos to clean up"
+          fi
