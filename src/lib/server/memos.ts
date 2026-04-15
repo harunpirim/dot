@@ -1,4 +1,3 @@
-
 import { marked } from 'marked';
 import { config } from '../../../moire.config';
 
@@ -11,9 +10,37 @@ export type Memo = {
 
 const DELETE_MARKER = /(^|\s)\[del\](?=\s|$)/im;
 
+function normalizeMemoAssetPath(memoPath: string, assetPath: string) {
+  const memoDir = memoPath.substring(0, memoPath.lastIndexOf('/'));
+  const normalizedPath = `${memoDir}/${decodeURI(assetPath).replace(/\\/g, '/')}`;
+  const segments = normalizedPath.split('/');
+  const stack: string[] = [];
+
+  for (const segment of segments) {
+    if (segment === '' && stack.length === 0) {
+      stack.push('');
+      continue;
+    }
+
+    if (!segment || segment === '.') continue;
+
+    if (segment === '..') {
+      if (stack.length > 1) stack.pop();
+      continue;
+    }
+
+    stack.push(segment);
+  }
+
+  return stack.join('/');
+}
+
 export async function getMemos(): Promise<Memo[]> {
   const memoModules = import.meta.glob('/src/memos/**/*.md', { query: '?raw', import: 'default', eager: true });
-  const assetModules = import.meta.glob('/src/memos/**/*.{png,jpg,jpeg,gif,webp}', { eager: true });
+  const assetModules = import.meta.glob(
+    '/src/memos/**/*.{png,jpg,jpeg,gif,webp,avif,heic,heif,PNG,JPG,JPEG,GIF,WEBP,AVIF,HEIC,HEIF}',
+    { eager: true }
+  );
 
   const memos = (await Promise.all(
     Object.entries(memoModules).map(async ([path, rawContent]) => {
@@ -23,20 +50,26 @@ export async function getMemos(): Promise<Memo[]> {
 
       const resolveAssets = (markdown: string, memoPath: string) => {
         return markdown.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, distinctUrl) => {
+          const rawAssetPath = distinctUrl.trim().replace(/^<|>$/g, '');
+          if (
+            rawAssetPath.startsWith('http://') ||
+            rawAssetPath.startsWith('https://') ||
+            rawAssetPath.startsWith('data:') ||
+            rawAssetPath.startsWith('/')
+          ) {
+            return match;
+          }
+
           let assetKeyLink = '';
 
-          if (!distinctUrl.startsWith('http') && !distinctUrl.startsWith('/')) {
-            const memoDir = memoPath.substring(0, memoPath.lastIndexOf('/'));
-            let assetPath = `${ memoDir }/${ distinctUrl }`;
-            assetPath = assetPath.replace('/./', '/');
-            // Simple normalization for ../
-            const parts = assetPath.split('/');
-            const stack = [];
-            for (const part of parts) {
-              if (part === '..') stack.pop();
-              else if (part !== '.') stack.push(part);
-            }
-            assetKeyLink = stack.join('/');
+          try {
+            assetKeyLink = normalizeMemoAssetPath(memoPath, rawAssetPath);
+          } catch {
+            return match;
+          }
+
+          if (!assetKeyLink.startsWith('/src/memos/')) {
+            return match;
           }
 
           if (assetKeyLink) {
