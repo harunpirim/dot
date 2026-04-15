@@ -6,7 +6,8 @@ export const prerender = true;
 
 export async function GET({ url }: { url: URL }) {
   const memos = await getMemos();
-  const siteUrl = url.origin && url.origin !== 'http://sveltekit-prerender' ? url.origin : (config.url || 'https://example.com');
+  const configUrl = config.url.replace(/\/$/, '');
+  const siteUrl = url.origin && url.origin !== 'http://sveltekit-prerender' ? url.origin : configUrl;
 
   const body = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">

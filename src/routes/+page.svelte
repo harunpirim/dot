@@ -4,6 +4,7 @@
     
     let { data }: { data: PageData } = $props();
     let ThemeComponent = $state<any>(null);
+    const siteUrl = config.url.replace(/\/$/, '');
 
     // __MOIRE_THEME__ is replaced at build time by Vite define (from moire.config.ts)
     // Only the matching branch survives dead-code elimination
@@ -33,7 +34,7 @@
         "@type": "Blog",
         "name": config.title,
         "description": config.description,
-        "url": config.url,
+        "url": siteUrl,
         "author": {
             "@type": "Person",
             "name": config.author
@@ -42,7 +43,7 @@
             "@type": "BlogPosting",
             "headline": memo.slug, // Using slug as headline since there's no title
             "datePublished": memo.date instanceof Date ? memo.date.toISOString() : memo.date,
-            "url": `${config.url}/#${memo.slug}`,
+            "url": `${siteUrl}/#${memo.slug}`,
             "articleBody": memo.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...', // Strip HTML for summary
             "keywords": memo.tags.join(', ')
         }))
@@ -59,4 +60,3 @@
     <!-- Simple loading state to avoid flash -->
     <div class="min-h-screen flex items-center justify-center">Loading...</div>
 {/if}
-

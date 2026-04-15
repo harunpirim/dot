@@ -1,7 +1,8 @@
 import { format } from 'date-fns';
 
-export function createMemoList(getData: () => any, config: any) {
-    let visibleCount = $state(config.pageSize || 20);
+export function createMemoList(getData: () => any, getPageSize: () => number | undefined) {
+    const pageSize = () => getPageSize() || 20;
+    let visibleCount = $state(pageSize());
     let selectedTag = $state<string | null>(null);
 
     // Derived: Get all unique tags
@@ -35,12 +36,12 @@ export function createMemoList(getData: () => any, config: any) {
     });
 
     function loadMore() {
-        visibleCount += (config.pageSize || 20);
+        visibleCount += pageSize();
     }
 
     function selectTag(tag: string | null) {
         selectedTag = selectedTag === tag ? null : tag;
-      visibleCount = config.pageSize || 20;
+      visibleCount = pageSize();
     }
 
     return {

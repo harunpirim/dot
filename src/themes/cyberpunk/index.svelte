@@ -9,7 +9,7 @@
   import Heatmap from '$lib/components/Heatmap.svelte';
 
   let {data}: {data: PageData} = $props();
-  const memoList = createMemoList(() => data, config);
+  const memoList = createMemoList(() => data, () => config.pageSize);
 
   $effect(() => {
     if (memoList.selectedTag) {
@@ -136,6 +136,7 @@
           </span>
         </header>
 
+        <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
         <div
           class="max-w-none text-[var(--text-color)]/90
                    [&_h1]:text-[1.35rem] [&_h1]:font-black [&_h1]:mb-4 [&_h1]:mt-5 [&_h1]:tracking-[0.15em] [&_h1]:text-[var(--accent-color)]
@@ -154,6 +155,7 @@
                    [&_pre]:bg-black/40 [&_pre]:border [&_pre]:border-[var(--accent-color)]/30 [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre]:my-4 [&_pre]:text-sm
                    [&_pre_code]:text-[var(--accent-color)] [&_pre_code]:bg-transparent [&_pre_code]:p-0
                    [&_.tag-link]:inline-block [&_.tag-link]:px-2 [&_.tag-link]:py-0.5 [&_.tag-link]:border [&_.tag-link]:border-[var(--text-color)]/30 [&_.tag-link]:text-[10px] [&_.tag-link]:tracking-widest [&_.tag-link]:uppercase [&_.tag-link]:text-[var(--text-color)]/60 [&_.tag-link:hover]:bg-[var(--text-color)] [&_.tag-link:hover]:text-[var(--bg-color)] [&_.tag-link]:transition-colors [&_.tag-link]:cursor-pointer [&_.tag-link]:no-underline"
+          role="presentation"
           onclick={(e) => {
             const target = e.target as HTMLElement;
             if (target.classList.contains('tag-link')) {

@@ -10,7 +10,7 @@
   import Heatmap from '$lib/components/Heatmap.svelte';
 
   let {data}: {data: PageData} = $props();
-  const memoList = createMemoList(() => data, config);
+  const memoList = createMemoList(() => data, () => config.pageSize);
 
   $effect(() => {
     if (memoList.selectedTag) {
@@ -95,6 +95,7 @@
         </div>
 
         <div class="flex-1 py-4 px-5">
+          <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
           <div
             class="max-w-none text-[0.95rem] text-[var(--text-color)]
                         [&_h1]:text-[1.2rem] [&_h1]:font-black [&_h1]:mb-4 [&_h1]:mt-5 [&_h1]:text-[var(--accent-color)]
@@ -114,6 +115,7 @@
                         [&_pre_code]:bg-transparent [&_pre_code]:text-[var(--text-color)] [&_pre_code]:p-0
                         [&_.tag-link]:bg-[var(--bg-color)] [&_.tag-link]:text-[var(--accent-color)] [&_.tag-link]:px-2 [&_.tag-link]:py-0.5 [&_.tag-link]:rounded-full [&_.tag-link]:text-[11px] [&_.tag-link]:no-underline [&_.tag-link]:mx-0.5 [&_.tag-link]:font-bold [&_.tag-link]:transition-all [&_.tag-link]:hover:scale-110
                         "
+             role="presentation"
              onclick={(e) => {
                 const target = e.target as HTMLElement;
                 if (target.classList.contains('tag-link')) {

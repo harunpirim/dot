@@ -8,7 +8,7 @@
   import Heatmap from '$lib/components/Heatmap.svelte';
 
   let {data}: {data: PageData} = $props();
-  const memoList = createMemoList(() => data, config);
+  const memoList = createMemoList(() => data, () => config.pageSize);
 
   $effect(() => {
     if (memoList.selectedTag) {
@@ -66,6 +66,7 @@
         class="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl md:rounded-[2rem] border border-white/50 bg-white/30 p-3 md:p-7 shadow-sm backdrop-blur-3xl backdrop-saturate-150 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] animate-in fade-in slide-in-from-bottom-8 duration-700"
         in:slide
         onmousemove={handleMouseMove}
+        role="presentation"
         id={memo.slug}
         style="--x: 50%; --y: 50%; animation-delay: {(i % 15) * 100}ms; animation-fill-mode: both;"
       >
@@ -74,6 +75,7 @@
           style="background: radial-gradient(800px circle at var(--x) var(--y), rgba(129, 110, 216, 0.06), transparent 50%);"
         ></div>
         <div class="relative z-10 flex h-full flex-col">
+          <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
           <div
             class="mb-6 text-[0.95rem] tracking-wide
                    [&_h1]:text-[1.25rem] [&_h1]:font-bold [&_h1]:mb-2 [&_h1]:mt-5 [&_h1]:text-slate-700
@@ -96,6 +98,7 @@
                    [&_pre]:bg-slate-50/50 [&_pre]:p-4 [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-slate-200/50 [&_pre]:overflow-x-auto [&_pre]:my-4 [&_pre]:text-sm
                    [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-slate-700
                    [&_.tag-link]:rounded-full [&_.tag-link]:px-3 [&_.tag-link]:py-1 [&_.tag-link]:text-xs [&_.tag-link]:font-medium [&_.tag-link]:tracking-wide [&_.tag-link]:transition-all [&_.tag-link]:bg-white/40 [&_.tag-link]:text-slate-600 [&_.tag-link]:no-underline [&_.tag-link]:mx-0.5 [&_.tag-link:hover]:bg-white/80 [&_.tag-link:hover]:text-slate-800"
+             role="presentation"
              onclick={(e) => {
                 const target = e.target as HTMLElement;
                 if (target.classList.contains('tag-link')) {

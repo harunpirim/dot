@@ -7,7 +7,7 @@
   import Heatmap from '$lib/components/Heatmap.svelte';
 
   let {data, config}: {data: PageData; config: any} = $props();
-  const memoList = createMemoList(() => data, config);
+  const memoList = createMemoList(() => data, () => config.pageSize);
 
   $effect(() => {
     if (memoList.selectedTag) {
@@ -107,6 +107,7 @@
                   {format(memo.date, 'HH:mm')}
                 </div>
 
+                <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
                 <div
                   class="max-w-none text-[var(--text-color)]/90
                         [&_h1]:text-[1.35rem] [&_h1]:font-bold [&_h1]:mb-5 [&_h1]:mt-7 [&_h1]:text-[var(--text-color)]
@@ -126,6 +127,7 @@
                         [&_pre]:bg-[var(--text-color)]/5 [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre]:my-6 [&_pre]:border-l-4 [&_pre]:border-[var(--text-color)]/20 [&_pre]:text-sm
                         [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-inherit
                         [&_.tag-link]:text-xs [&_.tag-link]:mx-1 [&_.tag-link]:font-bold [&_.tag-link]:uppercase [&_.tag-link]:tracking-wider [&_.tag-link]:text-[var(--text-color)]/30 [&_.tag-link:hover]:text-[var(--accent-color)] [&_.tag-link:hover]:underline [&_.tag-link]:no-underline [&_.tag-link]:transition-colors"
+                  role="presentation"
                   onclick={(e) => {
                     const target = e.target as HTMLElement;
                     if (target.classList.contains('tag-link')) {

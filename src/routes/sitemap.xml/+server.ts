@@ -4,9 +4,10 @@ import { getMemos } from '$lib/server/memos';
 export async function GET() {
   const memos = await getMemos();
   const headers = { 'Content-Type': 'application/xml' };
+  const siteUrl = config.url.replace(/\/$/, '');
 
   const pages: { loc: string; priority: number; changefreq: string; lastmod?: Date }[] = [
-    { loc: config.url, priority: 1.0, changefreq: 'daily' }
+    { loc: siteUrl, priority: 1.0, changefreq: 'daily' }
   ];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8" ?>
