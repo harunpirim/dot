@@ -15,9 +15,9 @@ export interface MoireConfig {
 export const config: MoireConfig = {
   title: '.dot.',
   author: 'harun',
-  description: 'Notes and fragments synced from Apple Notes.',
+  description: '...',
   url: 'https://harunpirim.github.io/dot',
-  theme: 'classic',
+  theme: 'academic',
   heatmap: false,
   pageSize: 10,
   order_by: 'created',
