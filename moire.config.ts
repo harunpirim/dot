@@ -1,11 +1,11 @@
 export const config = {
   title: ".dot.",
   author: "harun",
-  theme: "classic",
+  theme: "academic",
   heatmap: false,
-  pageSize: 20,
+  pageSize: 10,
   order_by: "created",
-  description: "jot down",
-  keywords: "memo, thought, sync, apple notes, shortcuts, ios",
-  url: "https://moire.blog"
+  description: "",
+  keywords: "memo, thought, sync",
+  url: ""
 };
