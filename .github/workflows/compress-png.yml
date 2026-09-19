@@ -5,37 +5,32 @@ on:
       - main
     paths:
       - 'src/memos/images/**'
-
 permissions:
   contents: write
-
 jobs:
   compress:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Install pngquant
         run: sudo apt-get install -y pngquant
-
       - name: Compress Images
         run: |
+          shopt -s nullglob
+          if [ ! -d src/memos/images ]; then echo "No images directory; nothing to do"; exit 0; fi
           cd src/memos/images
-          pngquant --quality 65-80 --skip-if-larger --ext .png --force *.png || true
-
+          files=(*.png)
+          if [ ${#files[@]} -eq 0 ]; then echo "No PNGs to compress"; exit 0; fi
+          pngquant --quality 65-80 --skip-if-larger --ext .png --force "${files[@]}" || true
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          git add src/memos/images/*.png
-          
+          git add -A src/memos/images 2>/dev/null || true
           if ! git diff --cached --quiet; then
             git commit -m "chore: optimize png images"
-            
             git pull --rebase origin main
-            
             git push origin main
           else
             echo "No changes to commit"
