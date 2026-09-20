@@ -77,7 +77,11 @@ export async function getMemos(): Promise<Memo[]> {
             const assetUrl = assetModule && typeof assetModule === 'object' ? assetModule.default : assetModule;
 
             if (assetUrl) {
-              return `![${ alt }](${ assetUrl })`;
+              // Site may be served under a sub-path (e.g. GitHub project pages: /dot/).
+              // Vite emits root-absolute asset URLs; make them relative so they resolve
+              // under the base path, consistent with kit.paths.relative = true.
+              const relativeAssetUrl = /^https?:\/\//.test(assetUrl) ? assetUrl : assetUrl.replace(/^\/+/, '');
+              return `![${ alt }](${ relativeAssetUrl })`;
             }
           }
 
